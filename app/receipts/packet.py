@@ -10,7 +10,7 @@ NAMES = ('job', *SHEETS)
 
 
 def read_sample(name):
-    if name not in ('dirty','clean'):
+    if name not in ('dirty','clean','pour'):
         raise LedgerError('SAMPLE_ABSENT','找不到样例收据',404)
     return {key:(DATA/name/(key+('.json' if key=='job' else '.csv'))).read_bytes().decode()
             for key in NAMES}

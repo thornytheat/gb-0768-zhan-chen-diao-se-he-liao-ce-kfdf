@@ -3,11 +3,12 @@ from functools import cached_property
 from app.blend.balance import settle
 from app.blend.lots import identify
 from app.blend.replay import rebuild
+from app.blend.transfer import reconcile
 from app.receipts.packet import parse_packet
 from app.receipts.tare import weigh
 from app.receipts.tickets import eligible
 
-VIEWS=('weighings','tares','lots','recovery','balance')
+VIEWS=('weighings','tares','lots','recovery','transfer','balance')
 
 
 class MixingJob:
@@ -34,6 +35,10 @@ class MixingJob:
     @cached_property
     def recovery(self):
         return rebuild(self.lots['rows'])
+
+    @cached_property
+    def transfer(self):
+        return reconcile(self.recovery)
 
     @cached_property
     def balance(self):

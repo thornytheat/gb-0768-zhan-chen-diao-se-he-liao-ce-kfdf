@@ -12,6 +12,7 @@
 | M3 颜料批号清分 | 对应别名和规范批号 | `GET /api/trial/dirty/lots` | `app/blend/lots.py` | `tests/test_lots.py` |
 | M4 回收料比例重建 | 筛选容器逐票复算回桶成分 | `GET /api/trial/dirty/recovery` | `app/blend/replay.py` `app/blend/share.py` | `tests/test_recovery.py` |
 | M5 库存与损耗对账 | 按批号核对存量、损耗与回桶申报 | `GET /api/trial/dirty/balance` | `app/blend/balance.py` `app/blend/claims.py` | `tests/test_balance.py` |
+| M8 倒料对账 | 对照出罐票与迟到的收罐票，核在途与短少批号 | `GET /api/trial/pour/transfer` | `app/blend/replay.py` `app/blend/transfer.py` | `tests/test_transfer.py` |
 | M6 批次留档复跑 | 封存工单及重跑 | `POST /api/books` | `app/ledger/bookshelf.py` `app/ledger/closeout.py` | `tests/test_history.py` |
 | M7 收据证据签发 | 签发可独立复核的成分收据 | `GET /api/export/{key}` | `app/ledger/signoff.py` | `tests/test_receipt.py` |
 
@@ -30,11 +31,15 @@
 | TRAP-15 | g、kg、mg 混用 | 净重差几个数量级 | 转整数毫克 | `app/receipts/units.py` | `tests/test_tares.py::test_mass_units` |
 | TRAP-24 | 等余数 | 尾差归属漂移 | 余数相同按批号 | `app/blend/share.py` | `tests/test_recovery.py::test_exact_rounding_residue` |
 | TRAP-25 | 两种皮重同时生效 | 误取第一或最后版本 | 双版本保留且隔离 | `app/receipts/tare.py` | `tests/test_tares.py::test_overlapping_tare_versions` |
+| TRAP-26 | 收罐票隔班才到 | 原罐虚增可用料，或按出罐量虚记收罐 | 出罐当天扣减，收罐按实收入账 | `app/blend/replay.py` | `tests/test_transfer.py::test_pour_out_deducts_source_on_out_day` |
+| TRAP-27 | 实收少于实发 | 短少混进罐存 | 短少按出罐成分拆到批号 | `app/blend/transfer.py` | `tests/test_transfer.py::test_shortage_named_by_lot` |
+| TRAP-28 | 收票到达前原罐已补新批号 | 收料成分被重新摊分 | 成分认出罐时点的快照 | `app/blend/replay.py` | `tests/test_transfer.py::test_late_receipt_keeps_out_event_composition` |
+| TRAP-29 | 同一收罐票重试 | 收罐重复入账 | 同号去重且同一出罐票只核收一次 | `app/receipts/tickets.py` `app/blend/replay.py` | `tests/test_transfer.py::test_retried_receipt_is_not_booked_twice` |
 
 ## 对账规则
 
 - 秤单 40 = 入册 34 + 隔离 5 + 重复表头 1。后续 3 张皮重隔离、2 张批号隔离、1 张超量，回放 28 张。
-- 每批号期初 + 领用 = 上件 + 损耗 + 回桶余料 + 争议留罐，实收与申报差异另外对照。
+- 每批号期初 + 领用 + 倒收 = 上件 + 损耗 + 回桶余料 + 倒出 + 争议留罐，倒出减倒收即倒料未收（在途加短少），实收与申报差异另外对照。
 - 规则版本与全原件的 SHA-256 构成工单留档键；同目录临时文件写入并同步后，以原子硬链接发布。
 
 ## 已知边界

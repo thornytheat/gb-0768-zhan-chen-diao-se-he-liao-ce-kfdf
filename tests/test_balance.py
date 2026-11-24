@@ -2,8 +2,8 @@ from app.blend.balance import settle
 
 
 def test_dirty_weight_conservation(dirty):
-    assert dirty.balance['totals']=={'opening_mg':100000,'issued_mg':250010,'applied_mg':140000,
-                                    'loss_mg':30000,'returned_mg':146010,'disputed_mg':34000}
+    assert dirty.balance['totals']=={'opening_mg':100000,'issued_mg':250010,'poured_in_mg':0,'applied_mg':140000,
+                                    'loss_mg':30000,'returned_mg':146010,'poured_out_mg':0,'disputed_mg':34000}
     assert all(r['check_mg']==0 for r in dirty.balance['lines'])
 
 

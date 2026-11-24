@@ -10,7 +10,8 @@ def certify(record):
         raise LedgerError('HASH_DISAGREEMENT','原件与收据摘要不一致',409)
     report=record['snapshot']['balance']
     for row in report['lines']:
-        if row['opening_mg']+row['issued_mg']!=row['applied_mg']+row['loss_mg']+row['returned_mg']+row['disputed_mg']:
+        if (row['opening_mg']+row['issued_mg']+row['poured_in_mg']
+                !=row['applied_mg']+row['loss_mg']+row['returned_mg']+row['poured_out_mg']+row['disputed_mg']):
             raise LedgerError('MASS_UNBALANCED','至少一个成分重量不平',409)
     return {'document':'调色收据证据', 'sha256':sha256(encoded(record)).hexdigest(),
             'key':record['manifest']['key'],'mass_check_mg':0,**record}

@@ -10,7 +10,7 @@ COLUMNS = {
     'lots': 'alias,lot,pigment',
     'claims': 'lot,mass,unit,receipt',
 }
-ACTIONS = ('OPEN','ISSUE','APPLY','LOSS','RETURN')
+ACTIONS = ('OPEN','ISSUE','POUR_IN','POUR_OUT','APPLY','LOSS','RETURN')
 
 
 @dataclass(frozen=True)

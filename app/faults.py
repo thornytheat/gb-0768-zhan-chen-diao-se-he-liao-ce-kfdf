@@ -13,4 +13,7 @@ REASONS = {
     'LOT_UNKNOWN':'颜料别名未登记', 'LOT_CONFLICT':'别名关联多个批号', 'MIXED_OUTPUT':'混料动作不得指定单一批号',
     'OVERDRAW':'净重超过罐内存量', 'CLAIM_CONFLICT':'同批申报值冲突', 'NO_CLAIM':'无回桶申报',
     'MISMATCH':'回桶差异', 'MATCH':'账实一致', 'ACCEPTED':'已采信',
+    'POUR_SELF':'同罐倒料无效', 'POUR_OUT_MISSING':'收罐票无对应出罐票',
+    'POUR_POT_MISMATCH':'收罐罐号与出罐票不符', 'POUR_IN_DUPLICATE':'出罐票已核收',
+    'POUR_SURPLUS':'实收超过实发', 'IN_TRANSIT':'在途待收', 'SHORT':'实收短少',
 }

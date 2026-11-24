@@ -10,8 +10,8 @@ from app.receipts.units import grams
 from app.settings import EDITION
 
 LINKS={'weighings':'称量原件','tares':'容器皮重','lots':'颜料批号','recovery':'回桶分料',
-       'balance':'库存核料','history':'工单留档','receipt':'证据签发'}
-ACTIONS={'OPEN':'期初','ISSUE':'领用','APPLY':'上件','LOSS':'损耗','RETURN':'回桶'}
+       'transfer':'倒料对账','balance':'库存核料','history':'工单留档','receipt':'证据签发'}
+ACTIONS={'OPEN':'期初','ISSUE':'领用','POUR_OUT':'出罐','POUR_IN':'收罐','APPLY':'上件','LOSS':'损耗','RETURN':'回桶'}
 pages=Blueprint('studio',__name__)
 
 
@@ -41,6 +41,8 @@ def desk(screen='overview'):
     if screen=='lots':
         rejects=data[screen]['isolated']+data[screen]['invalid_catalog']
     if screen=='recovery':
+        rejects=data[screen]['isolated']
+    if screen=='transfer':
         rejects=data[screen]['isolated']
     if screen=='balance':
         rejects=data[screen]['invalid_receipts']
